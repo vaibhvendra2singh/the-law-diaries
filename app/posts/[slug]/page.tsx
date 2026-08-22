@@ -79,14 +79,28 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
   // Query previous, next, and related articles in parallel for maximum speed
   const [prevPost, nextPost, relatedPosts] = await Promise.all([
+    // Previous (older) post
     prisma.post.findFirst({
-      where: { status: 'published', date: { lt: post.date } },
-      orderBy: { date: 'desc' },
+      where: {
+        status: 'published',
+        OR: [
+          { date: { lt: post.date } },
+          { date: post.date, id: { lt: post.id } },
+        ],
+      },
+      orderBy: [{ date: 'desc' }, { id: 'desc' }],
       select: { title: true, slug: true },
     }),
+    // Next (newer) post
     prisma.post.findFirst({
-      where: { status: 'published', date: { gt: post.date } },
-      orderBy: { date: 'asc' },
+      where: {
+        status: 'published',
+        OR: [
+          { date: { gt: post.date } },
+          { date: post.date, id: { gt: post.id } },
+        ],
+      },
+      orderBy: [{ date: 'asc' }, { id: 'asc' }],
       select: { title: true, slug: true },
     }),
     prisma.post.findMany({
@@ -172,27 +186,59 @@ export default async function PostPage({ params }: { params: { slug: string } })
         <ShareButtons title={post.title} slug={post.slug} />
 
         {/* ── Previous / Next Article Navigation ── */}
-        <div className="my-10 pt-6 border-t border-neutral-200 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-serif text-sm">
+        <div className="my-12 pt-8 border-t border-neutral-200 grid grid-cols-1 sm:grid-cols-2 gap-4 font-serif">
+          {/* Previous Post / Back to Feed */}
           {prevPost ? (
             <Link
               href={`/posts/${prevPost.slug}`}
-              className="text-black font-semibold hover:underline underline-offset-4 line-clamp-1 max-w-sm"
+              className="group p-4 rounded-xl border border-neutral-200 hover:border-black transition-all flex flex-col justify-between space-y-1 bg-white hover:bg-neutral-50"
             >
-              ← {prevPost.title}
+              <span className="text-[11px] font-sans font-bold uppercase tracking-widest text-neutral-400 group-hover:text-black">
+                ← Previous Article
+              </span>
+              <span className="text-sm font-bold text-[#1A1A1A] line-clamp-2 leading-snug">
+                {prevPost.title}
+              </span>
             </Link>
           ) : (
-            <span className="text-neutral-400">← Oldest Post</span>
+            <Link
+              href="/"
+              className="group p-4 rounded-xl border border-neutral-100 hover:border-black transition-all flex flex-col justify-between space-y-1 bg-neutral-50/50 hover:bg-white"
+            >
+              <span className="text-[11px] font-sans font-bold uppercase tracking-widest text-neutral-400 group-hover:text-black">
+                ← Home Feed
+              </span>
+              <span className="text-sm font-semibold text-neutral-600 line-clamp-1">
+                You're reading the earliest post
+              </span>
+            </Link>
           )}
 
+          {/* Next Post / Full Archive */}
           {nextPost ? (
             <Link
               href={`/posts/${nextPost.slug}`}
-              className="text-black font-semibold hover:underline underline-offset-4 line-clamp-1 max-w-sm text-right"
+              className="group p-4 rounded-xl border border-neutral-200 hover:border-black transition-all flex flex-col justify-between space-y-1 bg-white hover:bg-neutral-50 sm:text-right"
             >
-              {nextPost.title} →
+              <span className="text-[11px] font-sans font-bold uppercase tracking-widest text-neutral-400 group-hover:text-black">
+                Next Article →
+              </span>
+              <span className="text-sm font-bold text-[#1A1A1A] line-clamp-2 leading-snug">
+                {nextPost.title}
+              </span>
             </Link>
           ) : (
-            <span className="text-neutral-400 text-right">Latest Post →</span>
+            <Link
+              href="/archive"
+              className="group p-4 rounded-xl border border-neutral-100 hover:border-black transition-all flex flex-col justify-between space-y-1 bg-neutral-50/50 hover:bg-white sm:text-right"
+            >
+              <span className="text-[11px] font-sans font-bold uppercase tracking-widest text-neutral-400 group-hover:text-black">
+                Full Archive →
+              </span>
+              <span className="text-sm font-semibold text-neutral-600 line-clamp-1">
+                You're reading the latest post
+              </span>
+            </Link>
           )}
         </div>
 
