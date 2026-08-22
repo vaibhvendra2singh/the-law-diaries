@@ -1,5 +1,5 @@
 // app/api/auth/forgot-password/route.ts
-// Generates a secure reset token, stores in DB, emails a real clickable reset link.
+// Generates a secure reset token, stores in DB, emails a plain reset link.
 
 import { NextRequest, NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
@@ -15,9 +15,8 @@ export async function POST(req: NextRequest) {
 
     const normalizedEmail = email.trim().toLowerCase();
     const apiKey = process.env.RESEND_API_KEY;
-    const baseUrl = process.env.NEXTAUTH_URL?.startsWith('http')
-      ? process.env.NEXTAUTH_URL
-      : `https://${process.env.NEXTAUTH_URL}`;
+    const rawUrl = process.env.NEXTAUTH_URL ?? 'http://localhost:3000';
+    const baseUrl = /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
 
     // Always return success to prevent user enumeration
     const successResponse = NextResponse.json({
@@ -47,6 +46,7 @@ export async function POST(req: NextRequest) {
 
     const resetLink = `${baseUrl}/reset-password?token=${token}`;
 
+    // Send plain-style email (same format as contact form — lands in Primary)
     await fetch('https://api.resend.com/emails', {
       method: 'POST',
       headers: {
@@ -56,33 +56,15 @@ export async function POST(req: NextRequest) {
       body: JSON.stringify({
         from: 'The Law Diaries <onboarding@resend.dev>',
         to: [normalizedEmail],
-        subject: 'Reset Your Admin Password',
+        reply_to: normalizedEmail,
+        subject: `Password Reset — The Law Diaries`,
         html: `
-          <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; color: #1A1A1A;">
-            <h2 style="font-size: 22px; font-weight: bold; border-bottom: 2px solid #1A1A1A; padding-bottom: 12px; margin-bottom: 20px;">
-              Password Reset Request
-            </h2>
-            <p style="font-size: 15px; line-height: 1.6;">
-              We received a request to reset the password for <strong>${normalizedEmail}</strong>.
-            </p>
-            <p style="font-size: 15px; line-height: 1.6;">
-              Click the button below to set a new password. This link expires in <strong>1 hour</strong>.
-            </p>
-            <div style="text-align: center; margin: 32px 0;">
-              <a href="${resetLink}"
-                style="display: inline-block; background: #1A1A1A; color: #fff; text-decoration: none;
-                       font-family: Georgia, serif; font-size: 14px; font-weight: bold; letter-spacing: 0.1em;
-                       padding: 14px 32px; border-radius: 999px;">
-                RESET PASSWORD
-              </a>
-            </div>
-            <p style="font-size: 13px; color: #666; line-height: 1.6;">
-              If the button does not work, copy and paste this link:<br/>
-              <a href="${resetLink}" style="color: #1A1A1A; word-break: break-all;">${resetLink}</a>
-            </p>
-            <p style="font-size: 13px; color: #999; margin-top: 24px;">
-              If you did not request this, you can safely ignore this email.
-            </p>
+          <div style="font-family: Georgia, serif; max-width: 600px; margin: 0 auto; padding: 20px; color: #1A1A1A;">
+            <h2 style="border-bottom: 2px solid #1A1A1A; padding-bottom: 10px;">Password Reset Request</h2>
+            <p>A password reset was requested for <strong>${normalizedEmail}</strong>.</p>
+            <p>Click the link below to set a new password. This link expires in <strong>1 hour</strong>.</p>
+            <p><a href="${resetLink}" style="color: #1A1A1A;">${resetLink}</a></p>
+            <p style="color: #666; font-size: 13px; margin-top: 20px;">If you did not request this, you can safely ignore this email.</p>
           </div>
         `,
       }),
