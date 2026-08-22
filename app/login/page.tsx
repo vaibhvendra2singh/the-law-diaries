@@ -16,7 +16,11 @@ export default function LoginPage() {
   const [loading, setLoading]   = useState(false);
 
   useEffect(() => {
-    if (status === 'authenticated') router.replace('/admin');
+    // Prefetch admin dashboard assets in background so transition is instant
+    router.prefetch('/admin');
+    if (status === 'authenticated') {
+      window.location.href = '/admin';
+    }
   }, [status, router]);
 
   async function handleSubmit(e: React.FormEvent) {
@@ -24,16 +28,26 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
 
-    const result = await signIn('credentials', {
-      email, password, redirect: false,
-    });
+    try {
+      const result = await signIn('credentials', {
+        email: email.trim().toLowerCase(),
+        password,
+        redirect: false,
+      });
 
-    setLoading(false);
-
-    if (result?.error) {
-      setError('Incorrect email or password.');
-    } else {
-      router.replace('/admin');
+      if (result?.error) {
+        setLoading(false);
+        setError('Incorrect email or password.');
+      } else if (result?.ok) {
+        // Instant hard navigation so session cookies and server component /admin load immediately
+        window.location.href = '/admin';
+      } else {
+        setLoading(false);
+        setError('Sign in failed. Please try again.');
+      }
+    } catch {
+      setLoading(false);
+      setError('An unexpected error occurred. Please try again.');
     }
   }
 
