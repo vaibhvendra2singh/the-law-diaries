@@ -37,18 +37,52 @@
 
   /* Academic Legal Footnote Styles */
   .prose sup {
-    @apply font-sans text-xs font-semibold text-neutral-800 ml-0.5 select-none;
+    @apply font-serif text-xs font-semibold text-black ml-0.5 align-super;
   }
 
-  .prose section[data-footnotes] {
-    @apply border-t border-neutral-300 pt-6 mt-12 text-sm text-neutral-700 font-serif;
+  .prose sup a {
+    @apply text-black no-underline hover:underline font-bold px-0.5 py-0.5 rounded hover:bg-neutral-100;
   }
 
-  .prose section[data-footnotes] h2 {
-    @apply text-xs uppercase tracking-widest text-neutral-500 font-bold mb-4 mt-0;
+  .prose section[data-footnotes],
+  .prose .footnotes {
+    @apply border-t-2 border-neutral-900 pt-8 mt-14 text-sm text-neutral-800 font-serif;
   }
 
-  .prose section[data-footnotes] ol {
-    @apply list-decimal pl-5 space-y-2;
+  .prose section[data-footnotes]::before,
+  .prose .footnotes::before {
+    content: "FOOTNOTES & REFERENCES";
+    display: block;
+    font-family: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    color: #1A1A1A;
+    margin-bottom: 1.25rem;
+  }
+
+  .prose section[data-footnotes] h2,
+  .prose .footnotes h2 {
+    display: none !important;
+  }
+
+  .prose section[data-footnotes] ol,
+  .prose .footnotes ol {
+    @apply list-decimal pl-5 space-y-3;
+  }
+
+  .prose section[data-footnotes] li,
+  .prose .footnotes li {
+    @apply text-neutral-700 leading-relaxed pl-1;
+  }
+
+  .prose section[data-footnotes] li:target,
+  .prose .footnotes li:target {
+    @apply bg-neutral-100 rounded px-2 py-1 transition-colors;
+  }
+
+  .prose a.data-footnote-backref,
+  .prose a[data-footnote-backref] {
+    @apply ml-2 text-black hover:text-neutral-600 no-underline font-serif text-xs font-bold inline-block;
   }
 }

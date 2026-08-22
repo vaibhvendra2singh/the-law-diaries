@@ -108,3 +108,37 @@ export async function POST(
     return NextResponse.json({ error: 'Failed to save comment' }, { status: 500 });
   }
 }
+
+// ── DELETE: delete a comment (user / admin) ──────────────────────────────────
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { slug: string } }
+) {
+  try {
+    const { searchParams } = new URL(req.url);
+    const commentId = parseInt(searchParams.get('id') || '', 10);
+    if (!commentId || isNaN(commentId)) {
+      return NextResponse.json({ error: 'Invalid comment id' }, { status: 400 });
+    }
+
+    const post = await prisma.post.findFirst({
+      where: { slug: params.slug, status: 'published' },
+      select: { id: true },
+    });
+    if (!post) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
+    }
+
+    await prisma.comment.deleteMany({
+      where: {
+        id: commentId,
+        postId: post.id,
+      },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ error: 'Failed to delete comment' }, { status: 500 });
+  }
+}

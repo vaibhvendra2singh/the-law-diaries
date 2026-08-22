@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
 
 // ── PUT: update a post ───────────────────────────────────────────────────────
 export async function PUT(
@@ -37,6 +38,18 @@ export async function PUT(
       },
     });
 
+    try {
+      revalidatePath('/admin');
+      revalidatePath('/');
+      revalidatePath('/archive');
+      revalidatePath('/rss.xml');
+      if (updated?.slug) {
+        revalidatePath(`/posts/${updated.slug}`);
+      }
+    } catch (e) {
+      console.warn('Revalidation error:', e);
+    }
+
     return NextResponse.json(updated);
   } catch (err: any) {
     if (err?.code === 'P2025') {
@@ -59,7 +72,20 @@ export async function DELETE(
   if (isNaN(id)) return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
 
   try {
-    await prisma.post.delete({ where: { id } });
+    const deleted = await prisma.post.delete({ where: { id } });
+
+    try {
+      revalidatePath('/admin');
+      revalidatePath('/');
+      revalidatePath('/archive');
+      revalidatePath('/rss.xml');
+      if (deleted?.slug) {
+        revalidatePath(`/posts/${deleted.slug}`);
+      }
+    } catch (e) {
+      console.warn('Revalidation error:', e);
+    }
+
     return NextResponse.json({ success: true });
   } catch (err: any) {
     if (err?.code === 'P2025') {

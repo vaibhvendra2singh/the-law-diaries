@@ -6,6 +6,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
+import { revalidatePath } from 'next/cache';
 
 // ── GET: list published posts (public) ───────────────────────────────────────
 export async function GET() {
@@ -52,6 +53,16 @@ export async function POST(req: NextRequest) {
         date:       date ? new Date(date) : new Date(),
       },
     });
+
+    try {
+      revalidatePath('/admin');
+      revalidatePath('/');
+      revalidatePath('/archive');
+      revalidatePath('/rss.xml');
+      revalidatePath(`/posts/${post.slug}`);
+    } catch (e) {
+      console.warn('Revalidation error:', e);
+    }
 
     return NextResponse.json(post, { status: 201 });
   } catch (err: any) {

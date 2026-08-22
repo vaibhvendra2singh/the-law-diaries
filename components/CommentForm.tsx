@@ -45,7 +45,19 @@ export default function CommentForm({ slug, onCommentAdded }: Props) {
 
       setStatus('success');
       setName(''); setEmail(''); setComment('');
-      onCommentAdded({ ...data, createdAt: data.createdAt ?? new Date().toISOString() });
+      
+      const newCommentObj = { ...data, createdAt: data.createdAt ?? new Date().toISOString() };
+      if (typeof window !== 'undefined' && data.id) {
+        try {
+          const stored = JSON.parse(localStorage.getItem('user_my_comments') || '[]');
+          if (Array.isArray(stored)) {
+            stored.push(data.id);
+            localStorage.setItem('user_my_comments', JSON.stringify(stored));
+          }
+        } catch {}
+      }
+
+      onCommentAdded(newCommentObj);
     } catch {
       setError('Network error. Please check your connection and try again.');
       setStatus('error');

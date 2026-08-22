@@ -81,6 +81,7 @@ export default function EditPostPage() {
     setSaving(false);
 
     if (!res.ok) { setError(data.error ?? 'Failed to save.'); return; }
+    router.refresh();
     router.push('/admin');
   }
 

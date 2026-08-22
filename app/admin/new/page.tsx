@@ -63,6 +63,7 @@ export default function NewPostPage() {
       return;
     }
 
+    router.refresh();
     router.push('/admin');
   }
 

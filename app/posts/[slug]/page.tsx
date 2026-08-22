@@ -4,6 +4,7 @@ import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import type { Metadata } from 'next';
+import { cache } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import CommentSection from '@/components/CommentSection';
@@ -13,21 +14,40 @@ import CitationBox from '@/components/CitationBox';
 import RelatedArticles from '@/components/RelatedArticles';
 import LegalDisclaimer from '@/components/LegalDisclaimer';
 
-export const revalidate = 5;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
-  return [];
+  try {
+    const posts = await prisma.post.findMany({
+      where: { status: 'published' },
+      select: { slug: true },
+    });
+    return posts.map((post) => ({
+      slug: post.slug,
+    }));
+  } catch (error) {
+    console.error('Error generating static params:', error);
+    return [];
+  }
 }
+
+const getPost = cache(async (slug: string) => {
+  try {
+    return await prisma.post.findFirst({
+      where: { slug, status: 'published' },
+    });
+  } catch (error) {
+    console.error('Error fetching post:', error);
+    return null;
+  }
+});
 
 export async function generateMetadata({
   params,
 }: {
   params: { slug: string };
 }): Promise<Metadata> {
-  const post = await prisma.post.findFirst({
-    where: { slug: params.slug, status: 'published' },
-    select: { title: true, excerpt: true },
-  });
+  const post = await getPost(params.slug);
   if (!post) return {};
   return { title: post.title, description: post.excerpt };
 }
@@ -48,9 +68,7 @@ function parseTags(tagsStr: string): string[] {
 }
 
 export default async function PostPage({ params }: { params: { slug: string } }) {
-  const post = await prisma.post.findFirst({
-    where: { slug: params.slug, status: 'published' },
-  });
+  const post = await getPost(params.slug);
 
   if (!post) {
     notFound();
@@ -59,29 +77,28 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
   const tags = parseTags(post.tags);
 
-  // Query previous and next articles
-  const prevPost = await prisma.post.findFirst({
-    where: { status: 'published', date: { lt: post.date } },
-    orderBy: { date: 'desc' },
-    select: { title: true, slug: true },
-  });
-
-  const nextPost = await prisma.post.findFirst({
-    where: { status: 'published', date: { gt: post.date } },
-    orderBy: { date: 'asc' },
-    select: { title: true, slug: true },
-  });
-
-  // Query related articles based on tags or recent posts
-  const relatedPosts = await prisma.post.findMany({
-    where: {
-      status: 'published',
-      slug: { not: post.slug },
-    },
-    orderBy: { date: 'desc' },
-    take: 2,
-    select: { id: true, title: true, slug: true, excerpt: true, date: true },
-  });
+  // Query previous, next, and related articles in parallel for maximum speed
+  const [prevPost, nextPost, relatedPosts] = await Promise.all([
+    prisma.post.findFirst({
+      where: { status: 'published', date: { lt: post.date } },
+      orderBy: { date: 'desc' },
+      select: { title: true, slug: true },
+    }),
+    prisma.post.findFirst({
+      where: { status: 'published', date: { gt: post.date } },
+      orderBy: { date: 'asc' },
+      select: { title: true, slug: true },
+    }),
+    prisma.post.findMany({
+      where: {
+        status: 'published',
+        slug: { not: post.slug },
+      },
+      orderBy: { date: 'desc' },
+      take: 2,
+      select: { id: true, title: true, slug: true, excerpt: true, date: true },
+    }),
+  ]);
 
   return (
     <>
