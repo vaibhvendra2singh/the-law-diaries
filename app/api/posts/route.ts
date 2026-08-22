@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
         slug:       slug.trim().toLowerCase().replace(/\s+/g, '-'),
         excerpt:    excerpt?.trim() ?? '',
         content:    content ?? '',
-        authorName: authorName?.trim() || 'Samir Kapri',
+        authorName: authorName?.trim() || '',
         authorBio:  authorBio?.trim() || '',
         tags:       JSON.stringify(tags ?? []),
         status:     status ?? 'draft',

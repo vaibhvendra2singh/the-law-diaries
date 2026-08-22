@@ -11,8 +11,8 @@ export default function AdminPagesManager() {
   const [message, setMessage]     = useState('');
 
   // Settings form state
-  const [authorName, setAuthorName]       = useState('Samir Kapri');
-  const [authorTagline, setAuthorTagline] = useState('5th Semester Law Student at Bennett University');
+  const [authorName, setAuthorName]       = useState('');
+  const [authorTagline, setAuthorTagline] = useState('');
   const [siteName, setSiteName]           = useState('The Law Diaries');
 
   // About form state
@@ -30,7 +30,7 @@ export default function AdminPagesManager() {
       .then((r) => r.json())
       .then((data) => {
         if (data.settings) {
-          setAuthorName(data.settings.authorName || 'Samir Kapri');
+          setAuthorName(data.settings.authorName || '');
           setAuthorTagline(data.settings.authorTagline || '');
           setSiteName(data.settings.siteName || 'The Law Diaries');
         }
@@ -227,7 +227,7 @@ export default function AdminPagesManager() {
               value={authorName}
               onChange={(e) => setAuthorName(e.target.value)}
               className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 text-base font-bold text-[#1A1A1A] focus:outline-none focus:border-black shadow-sm"
-              placeholder="e.g. Samir Kapri or Client Name"
+              placeholder="e.g. Arjun Sharma or Law Firm Name"
             />
             <p className="text-xs text-neutral-500 mt-1">This default author name will be used across new posts and citations.</p>
           </div>
@@ -242,7 +242,7 @@ export default function AdminPagesManager() {
               value={authorTagline}
               onChange={(e) => setAuthorTagline(e.target.value)}
               className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-black shadow-sm"
-              placeholder="e.g. Advocate, Supreme Court of India or Law Student at Bennett University"
+              placeholder="e.g. Advocate, Supreme Court of India or Senior Partner"
             />
           </div>
 
@@ -287,7 +287,7 @@ export default function AdminPagesManager() {
               value={aboutTitle}
               onChange={(e) => setAboutTitle(e.target.value)}
               className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 text-base font-bold text-[#1A1A1A] focus:outline-none focus:border-black shadow-sm"
-              placeholder="e.g. Samir Kapri"
+              placeholder="e.g. Arjun Sharma"
             />
           </div>
 
@@ -301,7 +301,7 @@ export default function AdminPagesManager() {
               value={aboutSubtitle}
               onChange={(e) => setAboutSubtitle(e.target.value)}
               className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-black shadow-sm"
-              placeholder="e.g. 5th Semester Law Student at Bennett University..."
+              placeholder="e.g. Senior Advocate, Delhi High Court..."
             />
           </div>
 

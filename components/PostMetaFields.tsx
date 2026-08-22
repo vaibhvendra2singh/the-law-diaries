@@ -71,7 +71,7 @@ export default function PostMetaFields({ meta, onChange }: Props) {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div>
           <label htmlFor="meta-authorName" className={labelClass}>
-            AUTHOR NAME <span className="text-neutral-400 font-normal text-[10px] lowercase">(default: Samir Kapri)</span>
+            AUTHOR NAME <span className="text-neutral-400 font-normal text-[10px] lowercase">(default: Author Name)</span>
           </label>
           <input
             id="meta-authorName"
@@ -79,7 +79,7 @@ export default function PostMetaFields({ meta, onChange }: Props) {
             value={meta.authorName || ''}
             onChange={(e) => onChange({ authorName: e.target.value })}
             className={inputClass}
-            placeholder="e.g. Samir Kapri or Guest Author"
+            placeholder="e.g. Arjun Sharma or Guest Author"
           />
         </div>
 

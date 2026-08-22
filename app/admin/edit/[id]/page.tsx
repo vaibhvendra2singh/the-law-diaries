@@ -16,7 +16,7 @@ export default function EditPostPage() {
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState('');
   const [meta, setMeta] = useState({
-    title: '', slug: '', excerpt: '', authorName: 'Samir Kapri', authorBio: '', tags: '', status: 'draft', date: '',
+    title: '', slug: '', excerpt: '', authorName: '', authorBio: '', tags: '', status: 'draft', date: '',
   });
   const [saving, setSaving] = useState(false);
   const [error, setError]   = useState('');
@@ -36,7 +36,7 @@ export default function EditPostPage() {
           title:      post.title,
           slug:       post.slug,
           excerpt:    post.excerpt ?? '',
-          authorName: post.authorName ?? 'Samir Kapri',
+          authorName: post.authorName ?? '',
           authorBio:  post.authorBio ?? '',
           tags,
           status:     post.status,

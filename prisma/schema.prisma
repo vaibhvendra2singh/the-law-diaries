@@ -18,7 +18,7 @@ model Post {
   slug        String    @unique
   excerpt     String    @default("")
   content     String                        // Raw markdown content
-  authorName  String    @default("Samir Kapri")
+  authorName  String    @default("")
   authorBio   String    @default("")        // e.g. "5th Semester Law Student at Bennett University"
   tags        String    @default("[]")      // JSON array stored as string: '["law","policy"]'
   status      String    @default("draft")   // "draft" | "published"

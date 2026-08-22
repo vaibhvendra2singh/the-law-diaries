@@ -8,7 +8,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const pages = getPagesData();
   return {
     title: pages.contact.title || 'Contact Us',
-    description: pages.contact.subtitle || 'Get in touch with Samir Kapri at The Law Diaries.',
+    description: pages.contact.subtitle || 'Get in touch with The Law Diaries.',
   };
 }
 
