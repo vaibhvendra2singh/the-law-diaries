@@ -209,7 +209,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
                 ← Home Feed
               </span>
               <span className="text-sm font-semibold text-neutral-600 line-clamp-1">
-                You're reading the earliest post
+                You&apos;re reading the earliest post
               </span>
             </Link>
           )}
@@ -236,7 +236,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
                 Full Archive →
               </span>
               <span className="text-sm font-semibold text-neutral-600 line-clamp-1">
-                You're reading the latest post
+                You&apos;re reading the latest post
               </span>
             </Link>
           )}
