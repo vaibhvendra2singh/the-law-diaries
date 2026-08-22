@@ -2,8 +2,8 @@
 /**
  * scripts/setup.ts
  *
- * One-time setup script: prompts for admin email + password,
- * hashes the password with bcrypt, and writes both to your .env file.
+ * Admin setup: prompts for email + password, hashes it with bcrypt,
+ * writes to .env AND upserts the AdminUser record in the database.
  *
  * Run with:  npm run setup
  */
@@ -13,8 +13,10 @@ import * as fs from 'fs';
 import * as path from 'path';
 import * as crypto from 'crypto';
 import bcrypt from 'bcryptjs';
+import { PrismaClient } from '@prisma/client';
 
 const ENV_PATH = path.join(process.cwd(), '.env');
+const prisma = new PrismaClient();
 
 function prompt(query: string): Promise<string> {
   const rl = readline.createInterface({
@@ -55,8 +57,8 @@ async function main() {
   }
 
   const password = await prompt('Admin password: ');
-  if (!password || password.length < 6) {
-    console.error('Error: Password must be at least 6 characters.');
+  if (!password || password.length < 8) {
+    console.error('Error: Password must be at least 8 characters.');
     process.exit(1);
   }
 
@@ -77,7 +79,23 @@ async function main() {
   }
 
   console.log('✓ Admin credentials saved to .env');
+
+  // Upsert admin into database
+  try {
+    await prisma.adminUser.upsert({
+      where:  { email: email.toLowerCase() },
+      update: { passwordHash: hash },
+      create: { email: email.toLowerCase(), passwordHash: hash },
+    });
+    console.log('✓ Admin user saved to database');
+  } catch (err) {
+    console.warn('Warning: Could not save to database:', (err as Error).message);
+    console.warn('Run this script again after your database is set up.');
+  }
+
   console.log('\nLogin at http://localhost:3000/login\n');
 }
 
-main().catch(console.error);
+main()
+  .catch(console.error)
+  .finally(() => prisma.$disconnect());

@@ -1,0 +1,16 @@
+{
+  // Disable VS Code's built-in CSS validator — it doesn't understand
+  // Tailwind's @tailwind and @apply directives and flags them as errors.
+  // Install the "Tailwind CSS IntelliSense" extension for proper CSS support.
+  "css.validate": false,
+  "scss.validate": false,
+
+  // Recommended: associate .mdx files with MDX language for syntax highlighting
+  "files.associations": {
+    "*.mdx": "mdx"
+  },
+
+  // Keep TypeScript strict but don't show errors for files that
+  // depend on node_modules types before install
+  "typescript.tsdk": "node_modules/typescript/lib"
+}
