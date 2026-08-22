@@ -32,7 +32,12 @@ export const metadata: Metadata = {
     template: '%s · The Law Diaries',
   },
   description: 'Long-form commentary on law, policy, and current affairs.',
-  metadataBase: new URL(process.env.NEXTAUTH_URL ?? 'http://localhost:3000'),
+  metadataBase: new URL(
+    (() => {
+      const raw = process.env.NEXTAUTH_URL ?? 'http://localhost:3000';
+      return /^https?:\/\//i.test(raw) ? raw : `https://${raw}`;
+    })()
+  ),
   openGraph: {
     type: 'website',
     locale: 'en_IN',
