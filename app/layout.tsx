@@ -43,6 +43,12 @@ export const metadata: Metadata = {
     locale: 'en_IN',
     siteName: 'The Law Diaries',
   },
+  icons: {
+    icon: [
+      { url: '/favicon.svg', type: 'image/svg+xml' },
+    ],
+    apple: '/apple-icon',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
