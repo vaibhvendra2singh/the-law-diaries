@@ -52,11 +52,7 @@ export default function ForgotPasswordPage() {
               {message}
             </div>
 
-            <div className="p-4 bg-neutral-100 rounded-lg font-serif text-xs text-neutral-600 space-y-2">
-              <p className="font-bold text-black uppercase tracking-wider">Terminal Reset Command:</p>
-              <p>You can also reset your admin password instantly at any time by running this command in your project terminal:</p>
-              <code className="block bg-black text-white p-2 rounded text-[11px] font-mono">npm run setup</code>
-            </div>
+
 
             <div className="pt-2 text-center">
               <Link
