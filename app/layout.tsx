@@ -44,10 +44,9 @@ export const metadata: Metadata = {
     siteName: 'The Law Diaries',
   },
   icons: {
-    icon: [
-      { url: '/favicon.svg', type: 'image/svg+xml' },
-    ],
-    apple: '/apple-icon',
+    icon: '/favicon.svg',
+    shortcut: '/favicon.svg',
+    apple: '/favicon.svg',
   },
 };
 
