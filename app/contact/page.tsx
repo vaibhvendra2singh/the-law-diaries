@@ -14,7 +14,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function ContactPage() {
   const pages = getPagesData();
-  const { title, subtitle, email } = pages.contact;
+  const { title, subtitle, email, phone } = pages.contact;
+
+  const hasDirectContact = Boolean(email || phone);
 
   return (
     <div className="max-w-3xl mx-auto px-6 py-8">
@@ -44,18 +46,35 @@ export default function ContactPage() {
       </div>
 
       {/* Direct contact info */}
-      <div className="pt-10 border-t border-neutral-200 text-center font-serif text-sm text-neutral-600">
-        <p>
-          Direct Email:{' '}
-          <a
-            href={`mailto:${email}`}
-            className="text-black font-semibold underline decoration-black/40 underline-offset-4 hover:decoration-black"
-          >
-            {email}
-          </a>
-          {' · '}Phone: <span className="text-black font-semibold">+91 9934432143</span>
-        </p>
-      </div>
+      {hasDirectContact && (
+        <div className="pt-10 border-t border-neutral-200 text-center font-serif text-sm text-neutral-600">
+          <p>
+            {email && (
+              <>
+                Direct Email:{' '}
+                <a
+                  href={`mailto:${email}`}
+                  className="text-black font-semibold underline decoration-black/40 underline-offset-4 hover:decoration-black"
+                >
+                  {email}
+                </a>
+              </>
+            )}
+            {email && phone && ' · '}
+            {phone && (
+              <>
+                Phone:{' '}
+                <a
+                  href={`tel:${phone.replace(/\s+/g, '')}`}
+                  className="text-black font-semibold hover:underline"
+                >
+                  {phone}
+                </a>
+              </>
+            )}
+          </p>
+        </div>
+      )}
 
     </div>
   );

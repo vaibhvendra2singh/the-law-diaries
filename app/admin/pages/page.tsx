@@ -24,6 +24,7 @@ export default function AdminPagesManager() {
   const [contactTitle, setContactTitle]       = useState('');
   const [contactSubtitle, setContactSubtitle] = useState('');
   const [contactEmail, setContactEmail]       = useState('');
+  const [contactPhone, setContactPhone]       = useState('');
 
   useEffect(() => {
     fetch('/api/admin/pages')
@@ -43,6 +44,7 @@ export default function AdminPagesManager() {
           setContactTitle(data.contact.title || '');
           setContactSubtitle(data.contact.subtitle || '');
           setContactEmail(data.contact.email || '');
+          setContactPhone(data.contact.phone || '');
         }
         setLoading(false);
       })
@@ -126,6 +128,7 @@ export default function AdminPagesManager() {
             title: contactTitle,
             subtitle: contactSubtitle,
             email: contactEmail,
+            phone: contactPhone,
           },
         }),
       });
@@ -371,11 +374,24 @@ export default function AdminPagesManager() {
             <input
               id="contact-email"
               type="email"
-              required
               value={contactEmail}
               onChange={(e) => setContactEmail(e.target.value)}
               className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-black shadow-sm"
-              placeholder="lawdiaries01@gmail.com"
+              placeholder="e.g. contact@yourfirm.com"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="contact-phone" className="block text-xs font-bold uppercase tracking-widest text-black mb-1.5">
+              Phone Number <span className="text-neutral-400 font-normal lowercase">(optional — leave blank to hide)</span>
+            </label>
+            <input
+              id="contact-phone"
+              type="tel"
+              value={contactPhone}
+              onChange={(e) => setContactPhone(e.target.value)}
+              className="w-full border border-neutral-300 rounded-lg px-4 py-2.5 text-sm text-[#1A1A1A] focus:outline-none focus:border-black shadow-sm"
+              placeholder="e.g. +91 98765 43210"
             />
           </div>
 

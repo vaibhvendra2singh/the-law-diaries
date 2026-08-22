@@ -21,6 +21,7 @@ export interface ContactPageData {
   title: string;
   subtitle: string;
   email: string;
+  phone?: string;
 }
 
 export interface PagesData {
@@ -44,6 +45,7 @@ const defaultPages: PagesData = {
     title: 'Get in Touch',
     subtitle: 'If you have questions, comments on an article, or submission inquiries, please send a message below.',
     email: '',
+    phone: '',
   },
 };
 

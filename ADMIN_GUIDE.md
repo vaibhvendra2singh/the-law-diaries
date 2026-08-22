@@ -54,7 +54,8 @@ Once logged in as admin at `/login`:
 
 ### C. Contact Page
 1. Go to `/admin/pages` → click the **Contact Page** tab.
-2. Edit **Heading**, **Subtitle**, and the public **Contact Email Address** shown to visitors.
+2. Edit **Heading**, **Subtitle**, the public **Contact Email Address**, and optional **Phone Number**.
+   - If left blank, the phone number will not be displayed on the public contact page.
 3. Click **Save Contact Page**.
 
 ---
