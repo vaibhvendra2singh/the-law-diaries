@@ -13,7 +13,7 @@ export default function NewPostPage() {
   const router = useRouter();
   const [content, setContent] = useState('');
   const [meta, setMeta] = useState({
-    title: '', slug: '', excerpt: '', authorName: 'Samir Kapri', authorBio: '', tags: 'ESSAYS', status: 'draft', date: today,
+    title: '', slug: '', excerpt: '', authorName: '', authorBio: '', tags: 'ESSAYS', status: 'draft', date: today,
   });
   const [saving, setSaving] = useState(false);
   const [error, setError]   = useState('');

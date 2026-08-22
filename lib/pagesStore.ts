@@ -31,23 +31,19 @@ export interface PagesData {
 
 const defaultPages: PagesData = {
   settings: {
-    authorName: 'Samir Kapri',
-    authorTagline: '5th Semester Law Student at Bennett University',
-    siteName: 'The Law Diaries',
+    authorName: '',
+    authorTagline: '',
+    siteName: 'My Law Blog',
   },
   about: {
-    title: 'Samir Kapri',
-    subtitle: '5th Semester Law Student at Bennett University · Litigation & Policy Researcher',
-    content: `I am a dedicated 5th semester law student at **Bennett University (School of Law)**, pursuing a **BA LLB (Hons)**. My focus is devoted to litigation and research-oriented work centered on policy-making, constitutional jurisprudence, and statutory analysis.
-
-### Profile & Background
-
-I possess a keen passion for legal writing, case law analysis, and moot court competitions. My academic and practical endeavors focus on **Constitutional Law, Criminal Law, Subaltern Studies, and Sociology** — combining rigorous statutory interpretation with an understanding of socio-legal dynamics.`,
+    title: '',
+    subtitle: '',
+    content: '',
   },
   contact: {
     title: 'Get in Touch',
     subtitle: 'If you have questions, comments on an article, or submission inquiries, please send a message below.',
-    email: 'lawdiaries01@gmail.com',
+    email: '',
   },
 };
 

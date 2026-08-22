@@ -98,7 +98,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
 
           {/* Date, Author & Tags Line */}
           <div className="flex flex-wrap items-center gap-3 text-xs text-neutral-500 font-serif">
-            <span>By <strong className="text-black font-semibold">{post.authorName || 'Samir Kapri'}</strong></span>
+            <span>By <strong className="text-black font-semibold">{post.authorName || 'The Author'}</strong></span>
             <span>·</span>
             <time dateTime={new Date(post.date).toISOString()}>{formatDate(post.date)}</time>
             {tags.length > 0 && (
@@ -119,7 +119,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
         {/* ── Author Bio Bracket Note (If provided) ── */}
         {post.authorBio && (
           <div className="mb-6 italic text-sm text-neutral-600 bg-neutral-50 p-4 rounded-xl border border-neutral-200">
-            [{post.authorName || 'Samir Kapri'} {post.authorBio}]
+            [{post.authorName || 'The Author'} {post.authorBio}]
           </div>
         )}
 
@@ -147,7 +147,7 @@ export default async function PostPage({ params }: { params: { slug: string } })
         <CitationBox
           title={post.title}
           slug={post.slug}
-          authorName={post.authorName || 'Samir Kapri'}
+          authorName={post.authorName || 'The Author'}
           date={post.date}
         />
 
