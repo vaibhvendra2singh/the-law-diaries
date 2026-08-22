@@ -1,10 +1,22 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Nav — Floating Pill Header with Admin Login button
+// Nav — Floating Pill Header with dynamic Admin state
 // ─────────────────────────────────────────────────────────────────────────────
 
 export default function Nav() {
+  const pathname = usePathname();
+  const { status } = useSession();
+
+  // Hide the public floating pill on all /admin pages (AdminNav is rendered there)
+  if (pathname.startsWith('/admin')) {
+    return null;
+  }
+
   const navLinks = [
     { href: '/',        label: 'HOME'    },
     { href: '/about',   label: 'ABOUT'   },
@@ -42,15 +54,32 @@ export default function Nav() {
           ))}
         </ul>
 
-        {/* Right side: Admin Login Button */}
+        {/* Right side: Admin Button */}
         <div className="flex items-center gap-2 shrink-0">
-          <Link
-            href="/login"
-            title="Admin Login"
-            className="px-4 py-1.5 rounded-full font-sans text-xs uppercase tracking-widest font-semibold text-black border border-black hover:bg-black hover:text-white transition-colors"
-          >
-            ADMIN LOGIN
-          </Link>
+          {status === 'authenticated' ? (
+            <div className="flex items-center gap-2">
+              <Link
+                href="/admin"
+                className="px-4 py-1.5 rounded-full font-sans text-xs uppercase tracking-widest font-semibold text-white bg-black hover:bg-neutral-800 transition-colors shadow-sm"
+              >
+                DASHBOARD
+              </Link>
+              <button
+                onClick={() => signOut({ callbackUrl: '/' })}
+                className="px-3 py-1.5 rounded-full font-sans text-xs uppercase tracking-widest font-semibold text-neutral-600 hover:text-black hover:bg-neutral-100 transition-colors"
+              >
+                LOGOUT
+              </button>
+            </div>
+          ) : (
+            <Link
+              href="/login"
+              title="Admin Login"
+              className="px-4 py-1.5 rounded-full font-sans text-xs uppercase tracking-widest font-semibold text-black border border-black hover:bg-black hover:text-white transition-colors"
+            >
+              ADMIN LOGIN
+            </Link>
+          )}
         </div>
       </nav>
     </header>
