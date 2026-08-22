@@ -20,7 +20,7 @@ export default function LegalDisclaimer() {
       {isOpen && (
         <div className="px-6 pb-6 pt-2 border-t border-neutral-100 leading-relaxed space-y-3 bg-neutral-50/50">
           <p>
-            The opinions expressed herein are those of the contributors (which shall, for these purposes, include guests) in their personal capacity and do not, in any way or manner, reflect the views of Bennett University, court chambers, law firms, or organizations with which the contributors are presently associated or previously employed.
+            The opinions expressed herein are those of the contributors (which shall, for these purposes, include guests) in their personal capacity and do not, in any way or manner, reflect the views of any university, court chambers, law firms, or organizations with which the contributors are presently associated or previously employed.
           </p>
           <p>
             Postings on <em>The Law Diaries</em> are for informational, academic, and research purposes only. Nothing herein shall be deemed or construed to constitute legal, statutory, or investment advice. Discussions on or arising out of this publication between contributors and readers shall not create an attorney-client relationship.

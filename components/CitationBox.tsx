@@ -11,7 +11,7 @@ interface Props {
   date: Date;
 }
 
-export default function CitationBox({ title, slug, authorName = 'Samir Kapri', date }: Props) {
+export default function CitationBox({ title, slug, authorName = 'Author', date }: Props) {
   const [copied, setCopied] = useState(false);
 
   const formattedDate = new Date(date).toLocaleDateString('en-US', {
