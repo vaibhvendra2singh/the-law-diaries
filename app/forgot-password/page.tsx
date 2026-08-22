@@ -1,0 +1,109 @@
+'use client';
+
+// app/forgot-password/page.tsx — Forgot Password page
+
+import { useState } from 'react';
+import Link from 'next/link';
+
+export default function ForgotPasswordPage() {
+  const [email, setEmail]     = useState('');
+  const [status, setStatus]   = useState<'idle' | 'sending' | 'success'>('idle');
+  const [message, setMessage] = useState('');
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus('sending');
+
+    try {
+      const res = await fetch('/api/auth/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      const data = await res.json();
+      setMessage(data.message || 'If that email is registered as admin, instructions have been sent.');
+      setStatus('success');
+    } catch {
+      setMessage('Something went wrong. Please try again.');
+      setStatus('success');
+    }
+  }
+
+  return (
+    <div className="min-h-[70vh] flex items-center justify-center px-6 py-16">
+      <div className="w-full max-w-md border border-black p-8 bg-white shadow-sm space-y-6">
+
+        {/* Header */}
+        <div className="text-center">
+          <p className="font-sans text-[11px] font-bold uppercase tracking-widest text-neutral-500 mb-2">
+            ADMINISTRATOR
+          </p>
+          <h1 className="font-serif text-2xl font-bold text-[#1A1A1A] uppercase tracking-tight">
+            Forgot Password
+          </h1>
+          <p className="font-serif text-xs text-neutral-500 mt-2">
+            Enter your admin email address to receive password reset instructions.
+          </p>
+        </div>
+
+        {status === 'success' ? (
+          <div className="space-y-4">
+            <div className="p-4 border border-black bg-neutral-50 rounded-lg font-serif text-xs text-[#1A1A1A] leading-relaxed">
+              {message}
+            </div>
+
+            <div className="p-4 bg-neutral-100 rounded-lg font-serif text-xs text-neutral-600 space-y-2">
+              <p className="font-bold text-black uppercase tracking-wider">Terminal Reset Command:</p>
+              <p>You can also reset your admin password instantly at any time by running this command in your project terminal:</p>
+              <code className="block bg-black text-white p-2 rounded text-[11px] font-mono">npm run setup</code>
+            </div>
+
+            <div className="pt-2 text-center">
+              <Link
+                href="/login"
+                className="font-serif text-xs font-semibold text-black underline decoration-black/40 underline-offset-4 hover:decoration-black uppercase tracking-widest"
+              >
+                ← Back to Login
+              </Link>
+            </div>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div>
+              <label htmlFor="reset-email" className="block font-serif text-xs font-bold uppercase tracking-widest text-black mb-1.5">
+                ADMIN EMAIL
+              </label>
+              <input
+                id="reset-email"
+                type="email"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full border border-neutral-300 px-4 py-2.5 font-sans text-sm text-[#1A1A1A] bg-white focus:outline-none focus:border-black rounded-lg shadow-sm"
+                placeholder="admin@example.com"
+              />
+            </div>
+
+            <button
+              type="submit"
+              disabled={status === 'sending'}
+              className="w-full bg-black text-white py-3 rounded-full font-serif text-sm font-semibold hover:bg-neutral-800 transition-colors shadow-sm"
+            >
+              {status === 'sending' ? 'SENDING INSTRUCTIONS…' : 'SEND RESET INSTRUCTIONS'}
+            </button>
+
+            <div className="text-center pt-2">
+              <Link
+                href="/login"
+                className="font-serif text-xs font-semibold text-neutral-600 hover:text-black underline decoration-neutral-300 underline-offset-4 uppercase tracking-widest"
+              >
+                ← Cancel & Return to Login
+              </Link>
+            </div>
+          </form>
+        )}
+
+      </div>
+    </div>
+  );
+}

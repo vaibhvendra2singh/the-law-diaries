@@ -1,0 +1,49 @@
+// generator + datasource ─────────────────────────────────────────────────────
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ── Models ───────────────────────────────────────────────────────────────────
+
+model Post {
+  id          Int       @id @default(autoincrement())
+  title       String
+  slug        String    @unique
+  excerpt     String    @default("")
+  content     String                        // Raw markdown content
+  authorName  String    @default("Samir Kapri")
+  authorBio   String    @default("")        // e.g. "5th Semester Law Student at Bennett University"
+  tags        String    @default("[]")      // JSON array stored as string: '["law","policy"]'
+  status      String    @default("draft")   // "draft" | "published"
+  date        DateTime  @default(now())
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  comments    Comment[]
+}
+
+model Comment {
+  id        Int      @id @default(autoincrement())
+  postId    Int
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  name      String                        // Commenter's display name
+  email     String   @default("")         // Stored but never shown publicly
+  body      String                        // Comment text
+  honeypot  String   @default("")         // Spam protection: must be empty string on submit
+  createdAt DateTime @default(now())
+}
+
+model Page {
+  id        Int      @id @default(autoincrement())
+  slug      String   @unique             // "about" | "contact"
+  title     String
+  subtitle  String   @default("")
+  content   String                        // Raw markdown content
+  updatedAt DateTime @updatedAt
+}
