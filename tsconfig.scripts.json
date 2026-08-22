@@ -1,0 +1,16 @@
+// tsconfig.scripts.json — separate TS config for running scripts with ts-node.
+// These scripts run directly with Node, not through Next.js bundler.
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es2020",
+    "esModuleInterop": true,
+    "strict": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": ["scripts/**/*.ts", "prisma/**/*.ts"]
+}

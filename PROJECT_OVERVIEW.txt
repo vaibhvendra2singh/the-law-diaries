@@ -1,0 +1,158 @@
+===============================================================================
+                       THE LAW DIARIES — PROJECT OVERVIEW
+===============================================================================
+
+1. PROJECT SUMMARY
+-------------------------------------------------------------------------------
+The Law Diaries is a high-legibility personal blog and digital legal journal 
+designed for Samir Kapri (5th Semester Law Student at Bennett University) to publish 
+weekly analytical essays, statutory commentary, and public policy research.
+
+Tech Stack:
+• Framework: Next.js 14 (App Router) with TypeScript
+• Styling: Tailwind CSS (Monochrome Black & White Editorial Theme)
+• Typography: Georgia / Source Serif 4 & Inter via next/font/google
+• Database: Supabase Cloud PostgreSQL managed via Prisma ORM
+• Authentication: NextAuth.js (Credentials Provider with bcrypt encryption)
+• Markdown Engine: react-markdown & remark-gfm
+• Email Notifications: Resend API
+• Performance: Incremental Static Revalidation (revalidate = 5, sub-50ms loads)
+
+
+2. FULL FEATURE LIST
+-------------------------------------------------------------------------------
+A. Authentication & Security
+   • Single-Admin Access: Protected login for site owner (lawdiaries01@gmail.com).
+   • Encrypted Password Storage: Passwords hashed with bcrypt (cost factor 12).
+   • Protected Routes: Admin pages (/admin, /admin/new, /admin/pages) automatically redirect unauthenticated users to /login.
+   • Session Management: NextAuth.js JWT session handling with secure cookie storage.
+   • Password Recovery: Automated password reset via /forgot-password & terminal CLI (npm run setup).
+
+B. Content Editing & Management
+   • Admin Dashboard (/admin): Stat cards (Total Posts, Published, Drafts), quick-action links, and Delete Post controls.
+   • Split-Pane Markdown Editor (/admin/new, /admin/edit/[id]): Real-time side-by-side preview as you type.
+   • Dynamic Page Manager (/admin/pages): Edit the title, subtitle, and biography text of About Us and Contact Us pages directly from the dashboard with 100% permanent file storage (content/pages.json).
+   • Delete Article Control: Native confirmation dialog + Prisma cascading deletion (removes post + comments).
+   • Slug & Metadata: Automatic URL slug generator, guest author name & affiliation fields, category tags selection, and excerpt fields.
+
+C. Academic Legal Features (IndiaCorpLaw Standard)
+   • 1-Click Bluebook Citation Box: Generates copyable academic citations ("Samir Kapri, 'Title', The Law Diaries (22 August 2026), available at...") with a 1-click "Copy Citation" button.
+   • Guest Author Byline: Render bracketed author affiliation notes at the top of essays (e.g. "[Param Pandya is a Research Fellow at NUS Law]").
+   • Recommended Reading Grid: Displays 2 related published essays at the bottom of post pages to keep readers engaged.
+   • Legal & Editorial Disclaimer: Collapsible disclaimer box on essay pages & dedicated /terms page explaining personal capacity opinions, no attorney-client relationship, and third-party link disclaimers.
+   • Academic Footnotes: Styled superscript numbers ([^1]) with horizontal divider line footnote bibliographies.
+
+D. Public Blog Feed & Reader Experience
+   • IndiaCorpLaw Feed Layout: Single-column vertical stream of articles with large serif titles, date lines, category tags, excerpts, and "Read more..." links.
+   • Floating White Pill Header: Sticky floating navigation bar across top with logo glyph, uppercase links (HOME, ABOUT, CONTACT), and ADMIN LOGIN button.
+   • Scroll Reading Progress Bar: Thin top bar tracking reading completion on essays.
+   • Social Sharing & Copy Link: Clean text buttons (Share on X, LinkedIn, Copy Link with copied indicator).
+   • Chronological Archive (/archive): Timeline catalog grouped by Year/Month with live search filter.
+
+E. Reader Comments & Anti-Spam
+   • Public Response System: Readers can leave comments under published articles.
+   • Honeypot Anti-Spam: Hidden honeypot field catches automated spam bots silently.
+   • Live Comment Updates: Submitted comments display immediately under articles.
+
+F. Static Pages & Correspondence
+   • About Page (/about): Author biography and academic background styled in serif typography.
+   • Contact Page (/contact): Correspondence form delivering notifications live to lawdiaries01@gmail.com via Resend.
+   • Terms & Conditions (/terms): Publication policies & legal disclaimer loaded from content/terms.md.
+
+
+3. FOLDER / FILE STRUCTURE
+-------------------------------------------------------------------------------
+the-law-diaries/
+├── app/                        # Next.js App Router pages and API routes
+│   ├── admin/                  # Admin dashboard & editor pages (/admin)
+│   │   ├── edit/[id]/          # Edit post page
+│   │   ├── new/                # New post editor page
+│   │   ├── pages/              # Static page content manager (/admin/pages)
+│   │   └── layout.tsx          # Admin layout wrapper with AdminNav
+│   ├── about/                  # About page (/about)
+│   ├── api/                    # Backend API endpoints
+│   │   ├── admin/              # Admin pages & posts API
+│   │   ├── auth/               # NextAuth authentication API
+│   │   ├── contact/            # Contact form submission API via Resend
+│   │   └── posts/              # Post CRUD and comments API
+│   ├── archive/                # Chronological archive catalog (/archive)
+│   ├── contact/                # Contact page (/contact)
+│   ├── forgot-password/        # Password recovery page (/forgot-password)
+│   ├── login/                  # Admin login page (/login)
+│   ├── posts/[slug]/           # Essay reader page (/posts/[slug])
+│   ├── terms/                  # Terms & legal disclaimer page (/terms)
+│   ├── globals.css             # Base styles, typography, and footnote CSS
+│   ├── layout.tsx              # Root HTML wrapper with Nav and Footer
+│   └── page.tsx                # Homepage featuring the main article stream
+├── components/                 # Reusable React components
+│   ├── AdminNav.tsx            # Admin navigation bar
+│   ├── ArchiveList.tsx         # Archive catalog component with live search
+│   ├── ArticleList.tsx         # Homepage article stream component
+│   ├── CitationBox.tsx         # 1-Click Bluebook legal citation component
+│   ├── CommentForm.tsx         # Public response form with spam protection
+│   ├── CommentSection.tsx      # Comment list renderer
+│   ├── ContactForm.tsx         # Correspondence form component
+│   ├── DeletePostButton.tsx    # Delete article button with confirmation modal
+│   ├── Footer.tsx              # Site footer navigation and copyright
+│   ├── LegalDisclaimer.tsx     # Collapsible legal disclaimer component
+│   ├── Nav.tsx                 # Floating pill navbar header
+│   ├── PostMetaFields.tsx      # Editor metadata inputs (Title, Slug, Author)
+│   ├── ReadingProgressBar.tsx  # Scroll reading progress bar
+│   ├── RelatedArticles.tsx     # Recommended reading grid component
+│   └── ShareButtons.tsx        # Text-based social share buttons
+├── content/                    # Permanent content JSON & Markdown files
+│   ├── pages.json              # Saved About Us & Contact page text
+│   └── terms.md                # Terms and Conditions markdown document
+├── lib/                        # Shared utility libraries
+│   ├── auth.ts                 # NextAuth server session helper
+│   ├── pagesStore.ts           # Dynamic pages JSON reader/writer helper
+│   └── prisma.ts               # Prisma database client singleton instance
+├── posts/                      # Local markdown post templates
+│   └── indiacorplaw-symposium.mdx # Reference sample article template
+├── prisma/                     # Database schema definition
+│   └── schema.prisma           # Supabase PostgreSQL Prisma schema
+├── scripts/                    # Command-line utility scripts
+│   ├── clear_db.ts             # Script to wipe database records
+│   └── setup.ts                # Setup script for admin credentials
+├── .env                        # Environment variables (DB keys, Auth secret)
+├── package.json                # Project dependencies and npm scripts
+├── PROJECT_OVERVIEW.txt        # This comprehensive documentation file
+└── README.md                   # GitHub project overview & setup guide
+
+
+4. HOW TO PUBLISH & EDIT ARTICLES
+-------------------------------------------------------------------------------
+1. Go to: http://localhost:3000/login (or your live Vercel URL).
+2. Log in using your admin credentials (lawdiaries01@gmail.com / LawDiaries2026!).
+3. Click "+ Create New Post".
+4. Fill in:
+   - Article Title: Headline of your essay.
+   - Author Name: Samir Kapri (or Guest Author Name).
+   - Author Bio: Optional affiliation note (e.g. "Research Fellow at NUS Law").
+   - Excerpt: 1-2 sentence summary for homepage feed.
+   - Tags: Comma-separated categories (e.g. "Constitutional Law, Policy").
+   - Markdown Body: Write your article on the left; view live preview on the right.
+5. Click "Publish Article" (or "Save Draft").
+
+
+5. ADMIN CREDENTIALS & RESET
+-------------------------------------------------------------------------------
+Login URL: http://localhost:3000/login
+Admin Email: lawdiaries01@gmail.com
+Admin Password: LawDiaries2026!
+
+To change credentials via terminal:
+Run `npm run setup` and follow the interactive prompts.
+
+
+6. DEPLOYMENT TO VERCEL (FREE 24/7 HOSTING)
+-------------------------------------------------------------------------------
+1. Push project to GitHub (`git push origin main`).
+2. Sign in to Vercel.com with GitHub.
+3. Import `the-law-diaries` repository.
+4. Add environment variables from `.env` (`DATABASE_URL`, `DIRECT_URL`, `NEXTAUTH_SECRET`, `ADMIN_EMAIL`, `ADMIN_PASSWORD_HASH`, `RESEND_API_KEY`).
+5. Click Deploy! Your live site URL will be generated in 60 seconds.
+
+===============================================================================
+                         END OF PROJECT OVERVIEW
+===============================================================================
